@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useStore } from '../store.js';
 import { Avatar } from './ui.jsx';
+import { CitrusMark } from './Logo.jsx';
 
 const NAV = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -38,30 +39,10 @@ const NAV = [
 
 function Logo() {
   return (
-    <div className="flex items-center gap-2.5 px-4 py-5">
-      <svg viewBox="0 0 64 64" className="h-9 w-9">
-        <g stroke="#8ED630" strokeWidth="2.5" fill="none">
-          <circle cx="32" cy="32" r="22" />
-          <line x1="32" y1="10" x2="32" y2="54" />
-          <line x1="12.9" y1="21" x2="51.1" y2="43" />
-          <line x1="12.9" y1="43" x2="51.1" y2="21" />
-        </g>
-        <g fill="#8ED630">
-          {[
-            [32, 10],
-            [51.1, 21],
-            [51.1, 43],
-            [32, 54],
-            [12.9, 43],
-            [12.9, 21],
-          ].map(([x, y], i) => (
-            <circle key={i} cx={x} cy={y} r="3.4" />
-          ))}
-          <circle cx="32" cy="32" r="4" fill="#5DCAA5" />
-        </g>
-      </svg>
+    <Link to="/" className="flex items-center gap-2.5 px-4 py-5">
+      <CitrusMark size={38} />
       <span className="font-display text-2xl text-white">Citrus</span>
-    </div>
+    </Link>
   );
 }
 

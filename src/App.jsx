@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import { ToastProvider } from './components/ui.jsx';
 
+import Landing from './pages/Landing.jsx';
+import Login from './pages/Login.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Search from './pages/Search.jsx';
 import RecentSearches from './pages/RecentSearches.jsx';
@@ -32,10 +34,22 @@ import SettingsPage from './pages/SettingsPage.jsx';
 export default function App() {
   return (
     <ToastProvider>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+      <Routes>
+        {/* Public, pre-sign-in — rendered without the app shell */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        {/* Everything else runs inside the app shell */}
+        <Route path="/*" element={<AppShell />} />
+      </Routes>
+    </ToastProvider>
+  );
+}
+
+function AppShell() {
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/search" element={<Search />} />
           <Route path="/search/recent" element={<RecentSearches />} />
           <Route path="/authors" element={<Authors />} />
@@ -65,6 +79,5 @@ export default function App() {
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Layout>
-    </ToastProvider>
   );
 }
