@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Search,
@@ -46,7 +46,7 @@ function Logo() {
   );
 }
 
-export default function Layout({ children }) {
+export default function Layout() {
   const user = useStore((s) => s.user);
   const unread = useStore((s) => s.unreadCount());
   const navigate = useNavigate();
@@ -88,14 +88,16 @@ export default function Layout({ children }) {
         </nav>
 
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/')}
           className="m-3 flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-white/60 hover:bg-white/5 hover:text-white cursor-pointer"
         >
           <LogOut size={18} /> Sign out
         </button>
       </aside>
 
-      <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
+      <main className="min-w-0 flex-1 overflow-y-auto">
+        <Outlet />
+      </main>
     </div>
   );
 }

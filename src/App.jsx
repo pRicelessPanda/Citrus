@@ -2,8 +2,21 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout.jsx';
 import { ToastProvider } from './components/ui.jsx';
 
-import Landing from './pages/Landing.jsx';
+// ---- Marketing site (public, no app shell) ----
+import MarketingLayout from './marketing/MarketingLayout.jsx';
+import Home from './marketing/pages/Home.jsx';
+import Product from './marketing/pages/Product.jsx';
+import Solutions from './marketing/pages/Solutions.jsx';
+import Pricing from './marketing/pages/Pricing.jsx';
+import About from './marketing/pages/About.jsx';
+import Blog from './marketing/pages/Blog.jsx';
+import BlogPost from './marketing/pages/BlogPost.jsx';
+import Careers from './marketing/pages/Careers.jsx';
+import Contact from './marketing/pages/Contact.jsx';
+import Legal from './marketing/pages/Legal.jsx';
 import Login from './pages/Login.jsx';
+
+// ---- Product (inside the app shell) ----
 import Dashboard from './pages/Dashboard.jsx';
 import Search from './pages/Search.jsx';
 import RecentSearches from './pages/RecentSearches.jsx';
@@ -35,21 +48,27 @@ export default function App() {
   return (
     <ToastProvider>
       <Routes>
-        {/* Public, pre-sign-in — rendered without the app shell */}
-        <Route path="/" element={<Landing />} />
+        {/* Standalone sign-in */}
         <Route path="/login" element={<Login />} />
-        {/* Everything else runs inside the app shell */}
-        <Route path="/*" element={<AppShell />} />
-      </Routes>
-    </ToastProvider>
-  );
-}
 
-function AppShell() {
-  return (
-    <Layout>
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
+        {/* ===== Marketing website — public, separate from the product ===== */}
+        <Route element={<MarketingLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/solutions" element={<Solutions />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Legal kind="privacy" />} />
+          <Route path="/terms" element={<Legal kind="terms" />} />
+        </Route>
+
+        {/* ===== The product — inside the app shell (sidebar) ===== */}
+        <Route element={<Layout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/search" element={<Search />} />
           <Route path="/search/recent" element={<RecentSearches />} />
           <Route path="/authors" element={<Authors />} />
@@ -76,8 +95,11 @@ function AppShell() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:username" element={<Profile />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Layout>
+        </Route>
+
+        {/* Unknown → back to the marketing home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </ToastProvider>
   );
 }
