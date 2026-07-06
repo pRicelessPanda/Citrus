@@ -30,6 +30,15 @@ jobs:
         env:
           VITE_ROUTER: hash
           VITE_BASE: /Citrus/
+      # The site was originally enabled in "deploy from a branch" mode, which
+      # rejects Actions deployments — switch it to workflow builds.
+      - name: Set Pages build type to workflow
+        run: |
+          curl -sf -X PUT \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages" \
+            -d '{"build_type":"workflow"}' || echo "Pages config update skipped"
       - uses: actions/configure-pages@v5
         with:
           enablement: true
