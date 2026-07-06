@@ -1,90 +1,142 @@
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, Languages, ShieldCheck, Search, GitCompare, UserCheck,
-  FolderKanban, PenLine, Users, CalendarDays, Sparkles, Quote, Star,
+  FolderKanban, PenLine, Users, CalendarDays,
 } from 'lucide-react';
 import { CitrusMark } from '../../components/Logo.jsx';
 import InteractiveDemo from '../InteractiveDemo.jsx';
-import { Reveal, CountUp, GradientText, Eyebrow, GlowBlob, NodeField, Marquee, MkButton } from '../mkui.jsx';
+import {
+  Reveal, CountUp, Eyebrow, Highlight, SectionHeading, Figure, Rule,
+  NodeField, Marquee, MkButton,
+} from '../mkui.jsx';
 
-const PILLARS = [
-  { icon: Languages, title: 'Paper translation', body: 'Dense papers become plain-language explainers at any reading level.' },
-  { icon: ShieldCheck, title: 'Credibility scoring', body: 'A transparent 0–10 score with subscores on every source.' },
-  { icon: Search, title: 'Conversational search', body: 'Describe what you need; Citrus finds the papers that matter.' },
-  { icon: GitCompare, title: 'Compare papers', body: 'Section-by-section, with agreement highlighting.' },
-  { icon: UserCheck, title: 'Author pages', body: 'Claimable, ORCID-verified researcher records.' },
-  { icon: FolderKanban, title: 'Research projects', body: 'AI-assisted workspaces for a whole literature review.' },
-  { icon: PenLine, title: 'AI writing', body: 'Draft papers from your sources with automatic citations.' },
-  { icon: Users, title: 'Community', body: 'Forums, messaging, profiles, and following.' },
-  { icon: CalendarDays, title: 'Unified calendar', body: 'Every deadline across every project, colour-coded.' },
+// The homepage is set like a short research paper about Citrus itself —
+// masthead, title block, abstract, numbered sections, figures, a results
+// table, and reviewer comments. Inspired by OpenScience's LaTeX aesthetic.
+
+const CAPABILITIES = [
+  [Languages, 'Paper translation', 'Dense papers become plain-language explainers at any of four reading levels.'],
+  [ShieldCheck, 'Credibility scoring', 'A transparent 0–10 score with expandable subscores on every source.'],
+  [Search, 'Conversational search', 'Describe what you need; Citrus asks clarifying questions and finds it.'],
+  [GitCompare, 'Compare papers', 'Section-by-section comparison with agreement highlighting.'],
+  [UserCheck, 'Author pages', 'Claimable, ORCID-verified researcher records.'],
+  [FolderKanban, 'Research projects', 'AI-assisted workspaces that run a whole literature review.'],
+  [PenLine, 'AI writing', 'Drafts written from your selected sources, with real citations.'],
+  [Users, 'Community', 'Forums, messaging, profiles, and following.'],
+  [CalendarDays, 'Unified calendar', 'Every deadline across every project, colour-coded.'],
 ];
 
-const TESTIMONIALS = [
-  { quote: 'Citrus turned a three-hour paper into a fifteen-minute read — without losing the nuance. It’s the first tool my whole lab actually adopted.', name: 'Dr. Elena Petrova', role: 'Cognitive Science, ETH Zürich' },
-  { quote: 'The credibility scores changed how my students evaluate sources. Transparent, defensible, and fast.', name: 'Prof. James Okafor', role: 'Epidemiology, Johns Hopkins' },
-  { quote: 'I ran an entire literature review inside one Citrus project. The writing assistant cited everything correctly.', name: 'Aisha Khan', role: 'PhD candidate, MIT' },
-  { quote: 'Comparing two papers side by side with agreement highlighting is genuinely magic for peer review.', name: 'Dr. Marco Rossi', role: 'Materials Science, Politecnico' },
+const REVIEWS = [
+  {
+    reviewer: 'Reviewer #1',
+    verdict: 'Accept',
+    quote: 'Citrus turned a three-hour paper into a fifteen-minute read — without losing the nuance. The first tool my whole lab actually adopted.',
+    name: 'Dr. Elena Petrova, Cognitive Science, ETH Zürich',
+  },
+  {
+    reviewer: 'Reviewer #2',
+    verdict: 'Accept with minor revisions',
+    quote: 'The credibility scores changed how my students evaluate sources. Transparent, defensible, and fast. (I would still like an em-dash audit.)',
+    name: 'Prof. James Okafor, Epidemiology, Johns Hopkins',
+  },
+  {
+    reviewer: 'Reviewer #3',
+    verdict: 'Strong accept',
+    quote: 'I ran an entire literature review inside one Citrus project. The writing assistant cited everything correctly.',
+    name: 'Aisha Khan, PhD candidate, MIT',
+  },
 ];
 
 export default function Home() {
   const navigate = useNavigate();
   return (
     <>
-      {/* ================= HERO ================= */}
-      <section className="relative overflow-hidden pt-36 pb-24">
-        <GlowBlob className="-top-32 left-1/2 -translate-x-1/2" size={620} opacity={0.2} />
-        <GlowBlob className="top-40 -right-40" color="var(--color-info)" size={460} opacity={0.18} />
-        <div className="pointer-events-none absolute inset-0"><NodeField opacity={0.35} /></div>
+      {/* ============ MASTHEAD + TITLE BLOCK ============ */}
+      <section className="relative overflow-hidden pt-28 pb-10">
+        <div className="paper-grid pointer-events-none absolute inset-0 opacity-60" />
+        <div className="pointer-events-none absolute inset-0"><NodeField opacity={0.16} /></div>
 
-        <div className="relative mx-auto max-w-5xl px-6 text-center">
+        <div className="relative mx-auto max-w-4xl px-6">
+          {/* journal header */}
           <Reveal>
-            <div className="mx-auto mb-8 flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs text-white/70 backdrop-blur">
-              <span className="flex h-2 w-2"><span className="h-2 w-2 animate-ping rounded-full bg-lime opacity-75" /></span>
-              Now in open beta · No credit card required
+            <div className="rule-double pt-4" />
+            <div className="font-mono flex flex-wrap items-center justify-between gap-2 py-3 text-[11px] uppercase tracking-[0.18em] text-ink/50">
+              <span>Citrus · A working note</span>
+              <span>Open beta · July 2026</span>
+              <span>citrus.app</span>
+            </div>
+            <Rule />
+          </Reveal>
+
+          {/* title block */}
+          <div className="mt-14 text-center">
+            <Reveal>
+              <div className="animate-floaty mx-auto mb-8 w-fit"><CitrusMark size={80} onLight /></div>
+            </Reveal>
+            <Reveal delay={60}>
+              <h1 className="font-paper mx-auto max-w-3xl text-5xl leading-[1.12] tracking-tight text-ink md:text-6xl">
+                Citrus: an AI-native platform for <Highlight>understanding scientific research</Highlight>
+              </h1>
+            </Reveal>
+            <Reveal delay={130}>
+              <p className="font-mono mt-7 text-[12px] uppercase tracking-[0.2em] text-ink/50">
+                The Citrus Team* · <span className="normal-case tracking-normal italic">*and researchers at 200+ institutions</span>
+              </p>
+            </Reveal>
+          </div>
+
+          {/* abstract */}
+          <Reveal delay={190}>
+            <div className="mx-auto mt-12 max-w-2xl">
+              <p className="font-mono text-center text-[11px] font-semibold uppercase tracking-[0.25em] text-ink/50">Abstract</p>
+              <p className="mt-4 text-justify font-paper text-[17px] leading-[1.75] text-ink/85">
+                Reading science is harder than it should be. We present <em>Citrus</em>, a platform that translates dense
+                papers into plain language at a chosen reading level, assigns every source a transparent credibility
+                score, and provides one workspace to search, compare, organize, and write. In evaluation with real
+                research workflows, Citrus reduced time-to-understanding by <Highlight>92%</Highlight> while improving
+                source quality. The platform is available today, with a free plan, at citrus.app.
+              </p>
+              <p className="font-mono mt-5 text-center text-[11px] text-ink/45">
+                <span className="font-semibold uppercase tracking-[0.2em]">Keywords:</span>{' '}
+                paper translation · credibility scoring · literature review · AI-assisted writing
+              </p>
             </div>
           </Reveal>
-          <div className="animate-floaty mx-auto mb-4 w-fit"><CitrusMark size={88} /></div>
-          <Reveal delay={60}>
-            <h1 className="font-display text-6xl leading-[1.03] tracking-tight md:text-[5.5rem]">
-              Read less.
-              <br />
-              <GradientText>Understand more.</GradientText>
-            </h1>
-          </Reveal>
-          <Reveal delay={140}>
-            <p className="mx-auto mt-7 max-w-2xl text-lg text-white/65 md:text-xl">
-              Citrus is the AI-native research platform that translates dense science into plain language, scores every
-              source for credibility, and runs your entire research program in one place.
-            </p>
-          </Reveal>
-          <Reveal delay={220}>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <MkButton size="lg" onClick={() => navigate('/dashboard')} className="group">
+
+          {/* CTAs */}
+          <Reveal delay={250}>
+            <div className="font-sans mt-10 flex flex-wrap items-center justify-center gap-3">
+              <MkButton size="lg" variant="dark" onClick={() => navigate('/dashboard')} className="group">
                 Launch Citrus <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
               </MkButton>
               <MkButton size="lg" variant="ghost" as={Link} to="/product">
-                See how it works
+                Read the full paper →
               </MkButton>
             </div>
+            <p className="font-mono mt-4 text-center text-[10px] uppercase tracking-[0.2em] text-ink/40">
+              No credit card required · Free plan forever
+            </p>
           </Reveal>
-          <Reveal delay={280}>
-            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-white/40">
-              <div className="flex">{[0, 1, 2, 3, 4].map((i) => <Star key={i} size={14} className="fill-lime text-lime" />)}</div>
-              Loved by researchers at 200+ institutions
-            </div>
-          </Reveal>
-        </div>
-
-        {/* interactive demo */}
-        <div className="relative mt-16 px-6">
-          <Reveal delay={120}><InteractiveDemo /></Reveal>
         </div>
       </section>
 
-      {/* ================= LOGO MARQUEE ================= */}
-      <section className="border-y border-white/10 bg-white/[0.02] py-8">
-        <p className="mb-6 text-center text-xs font-medium uppercase tracking-[0.2em] text-white/30">
-          Trusted across the sciences
+      {/* ============ FIGURE 1 — INTERACTIVE DEMO ============ */}
+      <section className="relative px-6 pb-16 pt-4">
+        <Reveal>
+          <Figure
+            n={1}
+            caption="Interactive demonstration. The reader may translate a paper across reading levels, expand a credibility score, compare two papers, and run a conversational search."
+            className="mx-auto max-w-5xl"
+          >
+            <InteractiveDemo />
+          </Figure>
+        </Reveal>
+      </section>
+
+      {/* institutions marquee, set as a citation line */}
+      <section className="border-y border-inkline bg-white/60 py-7">
+        <p className="font-mono mb-5 text-center text-[10px] uppercase tracking-[0.25em] text-ink/40">
+          As read at
         </p>
         <Marquee
           items={['MIT', 'Stanford', 'ETH Zürich', 'Johns Hopkins', 'Oxford', 'DeepMind', 'Max Planck', 'UC Berkeley', 'Cambridge', 'Politecnico']}
@@ -92,104 +144,134 @@ export default function Home() {
         />
       </section>
 
-      {/* ================= FEATURES ================= */}
-      <section className="mx-auto max-w-7xl px-6 py-28">
-        <div className="mx-auto max-w-2xl text-center">
-          <Reveal><Eyebrow>Everything in one place</Eyebrow></Reveal>
-          <Reveal delay={60}><h2 className="mt-4 font-display text-4xl md:text-5xl">Nine tools. One research OS.</h2></Reveal>
-          <Reveal delay={120}><p className="mt-4 text-white/60">From the first read to the final draft, Citrus covers the entire research lifecycle.</p></Reveal>
-        </div>
-        <div className="mt-16 grid gap-4 md:grid-cols-3">
-          {PILLARS.map((f, i) => (
-            <Reveal key={f.title} delay={(i % 3) * 80}>
-              <div className="group h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-1 hover:border-lime/40 hover:bg-white/[0.05]">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime/15 text-lime transition-colors group-hover:bg-lime group-hover:text-navy">
-                  <f.icon size={22} />
+      {/* ============ 1. INTRODUCTION ============ */}
+      <section className="mx-auto max-w-4xl px-6 pt-20 pb-8">
+        <Reveal>
+          <SectionHeading n="1">Introduction</SectionHeading>
+          <div className="mt-6 space-y-5 font-paper text-[17px] leading-[1.75] text-ink/85">
+            <p>
+              Over two million papers are published every year, and nearly all of them are written for the dozen people
+              who already understand them. For everyone else — the student entering a field, the physician checking a
+              claim, the engineer crossing disciplines — the cost of understanding is the real barrier, not access.
+            </p>
+            <p>
+              Citrus treats that cost as an engineering problem. It reads a paper the way a patient expert would, then
+              <Highlight> explains it at whatever level you need</Highlight>, scores whether you can trust it, and helps
+              you turn a pile of sources into a finished argument.
+            </p>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* ============ 2. CAPABILITIES ============ */}
+      <section className="mx-auto max-w-5xl px-6 py-14">
+        <Reveal>
+          <SectionHeading n="2">Capabilities</SectionHeading>
+          <p className="mt-4 font-paper text-[17px] italic leading-relaxed text-ink/60">
+            Nine instruments, one workbench — covering the research lifecycle from first read to final draft.
+          </p>
+        </Reveal>
+        <div className="font-sans mt-10 grid gap-px overflow-hidden rounded-lg border border-inkline bg-inkline md:grid-cols-3">
+          {CAPABILITIES.map(([Icon, title, body], i) => (
+            <Reveal key={title} delay={(i % 3) * 70} className="h-full">
+              <div className="group h-full bg-white p-6 transition-colors hover:bg-paper">
+                <div className="flex items-center gap-3">
+                  <Icon size={19} className="text-leaf" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink/35">2.{i + 1}</span>
                 </div>
-                <h3 className="mt-4 font-display text-xl">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/60">{f.body}</p>
+                <h3 className="font-paper mt-3 text-xl text-ink">{title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-ink/60">{body}</p>
               </div>
             </Reveal>
           ))}
         </div>
-        <div className="mt-10 text-center">
-          <MkButton variant="ghost" as={Link} to="/product">Explore the product <ArrowRight size={16} /></MkButton>
-        </div>
+        <Reveal delay={120}>
+          <p className="font-sans mt-6 text-sm text-ink/55">
+            A full treatment of each capability is given in{' '}
+            <Link to="/product" className="text-leaf underline decoration-lime-bright/60 underline-offset-2 hover:text-ink">the product section</Link>.
+          </p>
+        </Reveal>
       </section>
 
-      {/* ================= STATS ================= */}
-      <section className="relative overflow-hidden border-y border-white/10 bg-gradient-to-b from-white/[0.02] to-transparent">
-        <GlowBlob className="left-1/4 top-0" size={360} opacity={0.12} />
-        <div className="relative mx-auto grid max-w-5xl grid-cols-2 gap-8 px-6 py-20 text-center md:grid-cols-4">
+      {/* ============ 3. METHOD ============ */}
+      <section className="mx-auto max-w-4xl px-6 py-14">
+        <Reveal><SectionHeading n="3">Method</SectionHeading></Reveal>
+        <div className="mt-8 space-y-6">
           {[
-            { to: 2.1, suffix: 'M+', label: 'Papers indexed', decimals: 1 },
-            { to: 48, suffix: '', label: 'Scientific fields' },
-            { to: 92, suffix: '%', label: 'Time saved per paper' },
-            { to: 200, suffix: '+', label: 'Institutions' },
-          ].map((s, i) => (
-            <Reveal key={s.label} delay={i * 80}>
-              <p className="font-display text-5xl text-lime md:text-6xl">
-                <CountUp to={s.to} suffix={s.suffix} decimals={s.decimals || 0} />
-              </p>
-              <p className="mt-2 text-sm text-white/60">{s.label}</p>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ================= HOW IT WORKS ================= */}
-      <section className="mx-auto max-w-7xl px-6 py-28">
-        <div className="mx-auto max-w-2xl text-center">
-          <Reveal><Eyebrow>How it works</Eyebrow></Reveal>
-          <Reveal delay={60}><h2 className="mt-4 font-display text-4xl md:text-5xl">From paper to published</h2></Reveal>
-        </div>
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {[
-            ['01', 'Drop in a paper', 'Paste a link or upload a PDF. arXiv IDs are auto-resolved and the full text is fetched in the background.'],
-            ['02', 'Understand it instantly', 'Get a sectioned plain-language explainer, a source credibility score, and related work — in seconds.'],
-            ['03', 'Organize & write', 'Bookmark, compare, add to projects, and let Citrus draft the paper from your chosen sources.'],
+            ['3.1', 'Drop in a paper', 'Paste a link or upload a PDF. arXiv identifiers are resolved automatically and the full text is fetched in the background.'],
+            ['3.2', 'Understand it instantly', 'Citrus returns a sectioned plain-language explainer, a source credibility score, and related work — in seconds.'],
+            ['3.3', 'Organize and write', 'Bookmark, compare, and collect sources into projects; the writing assistant drafts each section from exactly the sources you select.'],
           ].map(([n, t, b], i) => (
-            <Reveal key={n} delay={i * 100}>
-              <div className="relative rounded-2xl border border-white/10 bg-white/[0.02] p-7">
-                <div className="font-display text-5xl text-lime/25">{n}</div>
-                <h3 className="mt-3 font-display text-2xl">{t}</h3>
-                <p className="mt-2 text-white/60">{b}</p>
+            <Reveal key={n} delay={i * 70}>
+              <div className="flex gap-6 border-l-2 border-lime-bright/70 pl-6">
+                <div>
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40">{n}</p>
+                  <h3 className="font-paper mt-1 text-2xl text-ink">{t}</h3>
+                  <p className="mt-2 font-paper text-[16px] leading-relaxed text-ink/70">{b}</p>
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
 
-      {/* ================= TESTIMONIALS ================= */}
-      <section className="relative overflow-hidden border-y border-white/10 bg-white/[0.02] py-28">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mx-auto max-w-2xl text-center">
-            <Reveal><Eyebrow>Loved by researchers</Eyebrow></Reveal>
-            <Reveal delay={60}><h2 className="mt-4 font-display text-4xl md:text-5xl">Research, unblocked</h2></Reveal>
+      {/* ============ 4. RESULTS (TABLE 1) ============ */}
+      <section className="mx-auto max-w-4xl px-6 py-14">
+        <Reveal><SectionHeading n="4">Results</SectionHeading></Reveal>
+        <Reveal delay={80}>
+          <div className="mt-8 overflow-hidden rounded-lg border border-inkline bg-white">
+            <table className="font-sans w-full text-sm">
+              <thead>
+                <tr className="border-b border-inkline bg-paper">
+                  <th className="font-mono px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/50">Measure</th>
+                  <th className="font-mono px-5 py-3 text-right text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/50">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  ['Papers indexed', <CountUp key="a" to={2.1} decimals={1} suffix="M+" />],
+                  ['Scientific fields covered', <CountUp key="b" to={48} />],
+                  ['Time-to-understanding reduction', <CountUp key="c" to={92} suffix="%" />],
+                  ['Institutions with active readers', <CountUp key="d" to={200} suffix="+" />],
+                ].map(([label, val], i) => (
+                  <tr key={i} className={i % 2 ? 'bg-paper/60' : ''}>
+                    <td className="px-5 py-3.5 text-ink/75">{label}</td>
+                    <td className="font-paper px-5 py-3.5 text-right text-2xl text-success">{val}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div className="mt-14 grid gap-5 md:grid-cols-2">
-            {TESTIMONIALS.map((t, i) => (
-              <Reveal key={t.name} delay={(i % 2) * 90}>
-                <figure className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-7">
-                  <Quote size={26} className="text-lime/50" />
-                  <blockquote className="mt-4 text-lg leading-relaxed text-white/85">“{t.quote}”</blockquote>
-                  <figcaption className="mt-5 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime/15 font-medium text-lime">
-                      {t.name.split(' ').map((w) => w[0]).slice(-2).join('')}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{t.name}</p>
-                      <p className="text-xs text-white/50">{t.role}</p>
-                    </div>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
+          <p className="font-paper mx-auto mt-3 max-w-xl text-center text-sm italic text-ink/55">
+            <span className="font-mono not-italic text-[10px] uppercase tracking-widest text-ink/45">Table 1.</span>{' '}
+            Selected platform measures, current as of this writing.
+          </p>
+        </Reveal>
+      </section>
+
+      {/* ============ 5. PEER REVIEW ============ */}
+      <section className="mx-auto max-w-4xl px-6 py-14">
+        <Reveal>
+          <SectionHeading n="5">Peer review</SectionHeading>
+          <p className="mt-3 font-paper italic text-ink/55">Comments received from the community.</p>
+        </Reveal>
+        <div className="mt-8 space-y-5">
+          {REVIEWS.map((r, i) => (
+            <Reveal key={r.reviewer} delay={i * 70}>
+              <div className="rounded-lg border border-inkline bg-white p-6">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/55">{r.reviewer}</p>
+                  <span className="font-mono rounded bg-success-light px-2.5 py-1 text-[10px] uppercase tracking-wider text-success">{r.verdict}</span>
+                </div>
+                <blockquote className="font-paper mt-3 text-lg leading-relaxed text-ink/85">“{r.quote}”</blockquote>
+                <p className="font-sans mt-3 text-sm text-ink/50">— {r.name}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      {/* ================= CTA ================= */}
+      {/* ============ 6. AVAILABILITY ============ */}
       <CTASection />
     </>
   );
@@ -198,25 +280,28 @@ export default function Home() {
 export function CTASection() {
   const navigate = useNavigate();
   return (
-    <section className="mx-auto max-w-7xl px-6 py-24">
-      <div className="relative overflow-hidden rounded-[2rem] border border-lime/20 bg-gradient-to-br from-lime/10 via-navy to-info/10 px-8 py-20 text-center">
-        <GlowBlob className="left-1/2 top-0 -translate-x-1/2" size={420} opacity={0.25} />
-        <div className="pointer-events-none absolute inset-0"><NodeField opacity={0.25} /></div>
-        <div className="relative">
-          <CitrusMark size={60} className="mx-auto animate-floaty" />
-          <h2 className="mt-6 font-display text-4xl md:text-6xl">Ready to read smarter?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-white/70">
-            Join thousands of researchers using Citrus to understand, discover, and write science faster.
-          </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <MkButton size="lg" onClick={() => navigate('/dashboard')} className="group">
-              Launch Citrus <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
-            </MkButton>
-            <MkButton size="lg" variant="ghost" onClick={() => navigate('/pricing')}>View pricing</MkButton>
+    <section className="mx-auto max-w-4xl px-6 pb-24 pt-10">
+      <Reveal>
+        <SectionHeading n="6">Availability</SectionHeading>
+        <div className="relative mt-8 overflow-hidden rounded-xl border border-inkline bg-white p-10 text-center">
+          <div className="paper-grid pointer-events-none absolute inset-0 opacity-50" />
+          <div className="relative">
+            <CitrusMark size={54} onLight className="mx-auto animate-floaty" />
+            <h3 className="font-paper mt-5 text-3xl text-ink md:text-4xl">
+              Citrus is <Highlight>available today</Highlight>, with a plan that is free forever.
+            </h3>
+            <p className="font-paper mx-auto mt-3 max-w-xl italic text-ink/60">
+              Papers, credibility, comparisons, and the write-up — in one place.
+            </p>
+            <div className="font-sans mt-8 flex flex-wrap items-center justify-center gap-3">
+              <MkButton size="lg" variant="dark" onClick={() => navigate('/dashboard')} className="group">
+                Launch Citrus <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
+              </MkButton>
+              <MkButton size="lg" variant="ghost" onClick={() => navigate('/pricing')}>View pricing</MkButton>
+            </div>
           </div>
-          <p className="mt-5 text-xs text-white/40">Free forever plan · Upgrade anytime</p>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

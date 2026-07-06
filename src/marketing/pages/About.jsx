@@ -1,5 +1,5 @@
 import { Target, Heart, Zap, Globe } from 'lucide-react';
-import { Reveal, Eyebrow, GradientText, GlowBlob, CountUp, NodeField } from '../mkui.jsx';
+import { Reveal, Eyebrow, Highlight, SectionHeading, CountUp, Rule } from '../mkui.jsx';
 import { CitrusMark } from '../../components/Logo.jsx';
 import { CTASection } from './Home.jsx';
 
@@ -22,19 +22,18 @@ const TEAM = [
 export default function About() {
   return (
     <>
-      <section className="relative overflow-hidden pt-36 pb-16 text-center">
-        <GlowBlob className="-top-24 left-1/2 -translate-x-1/2" size={560} opacity={0.18} />
-        <div className="pointer-events-none absolute inset-0"><NodeField opacity={0.25} /></div>
+      <section className="relative pt-32 pb-14 text-center">
+        <div className="paper-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto max-w-3xl px-6">
-          <div className="animate-floaty mx-auto mb-6 w-fit"><CitrusMark size={72} /></div>
+          <div className="animate-floaty mx-auto mb-6 w-fit"><CitrusMark size={66} onLight /></div>
           <Reveal><Eyebrow>Our mission</Eyebrow></Reveal>
           <Reveal delay={60}>
-            <h1 className="mt-5 font-display text-4xl leading-[1.1] md:text-6xl">
-              We’re making the world’s research <GradientText>understandable to everyone</GradientText>
+            <h1 className="font-paper mt-5 text-4xl leading-[1.15] text-ink md:text-6xl">
+              Making the world’s research <Highlight>understandable to everyone</Highlight>
             </h1>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-white/65">
+            <p className="font-paper mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-ink/65">
               Millions of papers are published every year, yet most are locked behind dense prose and paywalled context.
               Citrus exists to close that gap — turning the frontier of human knowledge into something any curious mind can grasp.
             </p>
@@ -43,38 +42,50 @@ export default function About() {
       </section>
 
       {/* story */}
-      <section className="mx-auto max-w-3xl px-6 py-16">
+      <section className="mx-auto max-w-2xl px-6 py-12">
         <Reveal>
-          <div className="space-y-5 text-lg leading-relaxed text-white/70">
-            <p>Citrus started in a lab, at 2 a.m., with a stack of forty papers and a deadline. We kept asking the same question: <span className="text-white">why is understanding research so much harder than it should be?</span></p>
-            <p>So we built the tool we wished we had — one that reads a paper the way a patient expert would, scores whether you can trust it, and helps you turn a pile of sources into a finished argument.</p>
-            <p>Today, researchers at over 200 institutions use Citrus to move from question to insight faster than ever. We’re just getting started.</p>
+          <SectionHeading n="1">The story</SectionHeading>
+          <div className="font-paper mt-6 space-y-5 text-justify text-[17px] leading-[1.8] text-ink/80">
+            <p>
+              Citrus started in a lab, at 2 a.m., with a stack of forty papers and a deadline. We kept asking the same
+              question: <em>why is understanding research so much harder than it should be?</em>
+            </p>
+            <p>
+              So we built the tool we wished we had — one that reads a paper the way a patient expert would, scores
+              whether you can trust it, and helps you turn a pile of sources into a finished argument.
+            </p>
+            <p>
+              Today, researchers at over 200 institutions use Citrus to move from question to insight faster than ever.
+              We’re just getting started.
+            </p>
           </div>
         </Reveal>
       </section>
 
       {/* stats */}
-      <section className="border-y border-white/10 bg-white/[0.02]">
-        <div className="mx-auto grid max-w-4xl grid-cols-3 gap-8 px-6 py-16 text-center">
+      <section className="mx-auto max-w-3xl px-6 py-8">
+        <Rule />
+        <div className="grid grid-cols-3 gap-8 py-10 text-center">
           {[[2021, '', 'Founded'], [200, '+', 'Institutions'], [48, '', 'Fields covered']].map(([n, s, l]) => (
             <Reveal key={l}>
-              <p className="font-display text-5xl text-lime"><CountUp to={n} suffix={s} /></p>
-              <p className="mt-2 text-sm text-white/60">{l}</p>
+              <p className="font-paper text-5xl text-success"><CountUp to={n} suffix={s} /></p>
+              <p className="font-mono mt-2 text-[10px] uppercase tracking-[0.2em] text-ink/50">{l}</p>
             </Reveal>
           ))}
         </div>
+        <Rule />
       </section>
 
       {/* values */}
-      <section className="mx-auto max-w-6xl px-6 py-24">
-        <Reveal><h2 className="mb-12 text-center font-display text-4xl md:text-5xl">What we believe</h2></Reveal>
+      <section className="mx-auto max-w-5xl px-6 py-16">
+        <Reveal><SectionHeading n="2" className="mb-10 text-center">What we believe</SectionHeading></Reveal>
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {VALUES.map((v, i) => (
             <Reveal key={v.title} delay={i * 70}>
-              <div className="h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime/15 text-lime"><v.icon size={22} /></div>
-                <h3 className="mt-4 font-display text-xl">{v.title}</h3>
-                <p className="mt-2 text-sm text-white/60">{v.body}</p>
+              <div className="h-full rounded-xl border border-inkline bg-white p-6">
+                <v.icon size={21} className="text-leaf" />
+                <h3 className="font-paper mt-4 text-xl text-ink">{v.title}</h3>
+                <p className="font-paper mt-2 text-sm leading-relaxed text-ink/60">{v.body}</p>
               </div>
             </Reveal>
           ))}
@@ -82,17 +93,17 @@ export default function About() {
       </section>
 
       {/* team */}
-      <section className="mx-auto max-w-6xl px-6 pb-24">
-        <Reveal><h2 className="mb-12 text-center font-display text-4xl md:text-5xl">The team</h2></Reveal>
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+      <section className="mx-auto max-w-5xl px-6 pb-16">
+        <Reveal><SectionHeading n="3" className="mb-10 text-center">The team</SectionHeading></Reveal>
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
           {TEAM.map((m, i) => (
             <Reveal key={m[0]} delay={(i % 6) * 50}>
               <div className="text-center">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-lime/25 to-info/20 font-display text-2xl text-lime">
+                <div className="font-paper mx-auto flex h-20 w-20 items-center justify-center rounded-xl border border-inkline bg-white text-2xl text-leaf">
                   {m[0].split(' ').map((w) => w[0]).join('')}
                 </div>
-                <p className="mt-3 text-sm font-medium">{m[0]}</p>
-                <p className="text-xs text-white/50">{m[1]}</p>
+                <p className="font-sans mt-3 text-sm font-medium text-ink">{m[0]}</p>
+                <p className="font-mono mt-0.5 text-[10px] uppercase tracking-wider text-ink/45">{m[1]}</p>
               </div>
             </Reveal>
           ))}

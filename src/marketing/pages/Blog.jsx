@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { Reveal, Eyebrow, GradientText, GlowBlob } from '../mkui.jsx';
+import { Reveal, Eyebrow, Highlight } from '../mkui.jsx';
 
 export const POSTS = [
   {
@@ -64,40 +63,44 @@ export default function Blog() {
   const [featured, ...rest] = POSTS;
   return (
     <>
-      <section className="relative overflow-hidden pt-36 pb-10 text-center">
-        <GlowBlob className="-top-20 left-1/2 -translate-x-1/2" size={480} opacity={0.16} />
+      <section className="relative pt-32 pb-8 text-center">
+        <div className="paper-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto max-w-3xl px-6">
           <Reveal><Eyebrow>Blog</Eyebrow></Reveal>
-          <Reveal delay={60}><h1 className="mt-5 font-display text-5xl md:text-7xl">The <GradientText>Citrus</GradientText> journal</h1></Reveal>
-          <Reveal delay={120}><p className="mx-auto mt-6 max-w-xl text-lg text-white/65">Product notes, research guides, and the occasional strong opinion.</p></Reveal>
+          <Reveal delay={60}>
+            <h1 className="font-paper mt-5 text-5xl text-ink md:text-6xl">The <Highlight>Citrus</Highlight> journal</h1>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="font-paper mx-auto mt-6 max-w-xl text-lg italic text-ink/60">
+              Product notes, research guides, and the occasional strong opinion.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-12">
-        {/* featured */}
+      <section className="mx-auto max-w-5xl px-6 py-10">
+        {/* featured — set like a lead article */}
         <Reveal>
-          <Link to={`/blog/${featured.slug}`} className="group grid overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] md:grid-cols-2">
-            <div className="relative min-h-56 bg-gradient-to-br from-lime/20 via-navy to-info/20">
-              <div className="pointer-events-none absolute inset-0 opacity-40"><GlowBlob className="left-1/3 top-1/3" size={220} opacity={0.4} /></div>
-            </div>
+          <Link to={`/blog/${featured.slug}`} className="group grid overflow-hidden rounded-xl border border-inkline bg-white md:grid-cols-[1fr_1.4fr]">
+            <div className="paper-grid relative min-h-48 border-b border-inkline bg-paper md:border-b-0 md:border-r" />
             <div className="p-8">
-              <span className="rounded-full bg-lime/15 px-3 py-1 text-xs text-lime">{featured.tag}</span>
-              <h2 className="mt-4 font-display text-3xl leading-snug transition-colors group-hover:text-lime">{featured.title}</h2>
-              <p className="mt-3 text-white/60">{featured.excerpt}</p>
-              <p className="mt-5 text-sm text-white/40">{featured.author} · {featured.date} · {featured.read}</p>
+              <span className="font-mono rounded bg-lime-bright/25 px-2.5 py-1 text-[10px] uppercase tracking-wider text-ink/70">{featured.tag}</span>
+              <h2 className="font-paper mt-4 text-3xl leading-snug text-ink transition-colors group-hover:text-leaf">{featured.title}</h2>
+              <p className="font-paper mt-3 leading-relaxed text-ink/60">{featured.excerpt}</p>
+              <p className="font-mono mt-5 text-[10px] uppercase tracking-wider text-ink/45">{featured.author} · {featured.date} · {featured.read}</p>
             </div>
           </Link>
         </Reveal>
 
         {/* grid */}
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
+        <div className="mt-6 grid gap-5 md:grid-cols-3">
           {rest.map((p, i) => (
             <Reveal key={p.slug} delay={(i % 3) * 80}>
-              <Link to={`/blog/${p.slug}`} className="group flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-1 hover:border-lime/40">
-                <span className="w-fit rounded-full bg-white/5 px-3 py-1 text-xs text-white/60">{p.tag}</span>
-                <h3 className="mt-4 font-display text-xl leading-snug transition-colors group-hover:text-lime">{p.title}</h3>
-                <p className="mt-2 flex-1 text-sm text-white/60">{p.excerpt}</p>
-                <p className="mt-4 text-xs text-white/40">{p.date} · {p.read}</p>
+              <Link to={`/blog/${p.slug}`} className="group flex h-full flex-col rounded-xl border border-inkline bg-white p-6 transition-all hover:-translate-y-0.5 hover:border-leaf/50">
+                <span className="font-mono w-fit rounded border border-inkline px-2.5 py-1 text-[10px] uppercase tracking-wider text-ink/55">{p.tag}</span>
+                <h3 className="font-paper mt-4 text-xl leading-snug text-ink transition-colors group-hover:text-leaf">{p.title}</h3>
+                <p className="font-paper mt-2 flex-1 text-sm leading-relaxed text-ink/60">{p.excerpt}</p>
+                <p className="font-mono mt-4 text-[10px] uppercase tracking-wider text-ink/40">{p.date} · {p.read}</p>
               </Link>
             </Reveal>
           ))}

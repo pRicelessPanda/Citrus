@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Minus, ChevronDown, ArrowRight } from 'lucide-react';
-import { Reveal, Eyebrow, GradientText, GlowBlob, MkButton } from '../mkui.jsx';
+import { Check, Minus, ChevronDown } from 'lucide-react';
+import { Reveal, Eyebrow, Highlight, MkButton } from '../mkui.jsx';
 import { CTASection } from './Home.jsx';
 
 const TIERS = [
@@ -37,23 +37,25 @@ export default function Pricing() {
 
   return (
     <>
-      <section className="relative overflow-hidden pt-36 pb-12 text-center">
-        <GlowBlob className="-top-20 left-1/2 -translate-x-1/2" size={520} opacity={0.18} />
+      <section className="relative pt-32 pb-10 text-center">
+        <div className="paper-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto max-w-3xl px-6">
           <Reveal><Eyebrow>Pricing</Eyebrow></Reveal>
           <Reveal delay={60}>
-            <h1 className="mt-5 font-display text-5xl leading-tight md:text-7xl">
-              Start free. <GradientText>Scale when ready.</GradientText>
+            <h1 className="font-paper mt-5 text-5xl leading-[1.12] text-ink md:text-6xl">
+              Start free. <Highlight>Scale when ready.</Highlight>
             </h1>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-white/65">Simple, transparent pricing for researchers and teams of every size.</p>
+            <p className="font-paper mx-auto mt-6 max-w-xl text-lg italic text-ink/60">
+              Simple, transparent pricing for researchers and teams of every size.
+            </p>
           </Reveal>
           <Reveal delay={160}>
-            <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 p-1.5">
-              <button onClick={() => setAnnual(false)} className={`cursor-pointer rounded-full px-4 py-1.5 text-sm ${!annual ? 'bg-lime text-navy' : 'text-white/60'}`}>Monthly</button>
-              <button onClick={() => setAnnual(true)} className={`cursor-pointer rounded-full px-4 py-1.5 text-sm ${annual ? 'bg-lime text-navy' : 'text-white/60'}`}>
-                Annual <span className={annual ? 'text-navy/70' : 'text-lime'}>−20%</span>
+            <div className="font-sans mt-8 inline-flex items-center gap-1 rounded-full border border-inkline bg-white p-1">
+              <button onClick={() => setAnnual(false)} className={`cursor-pointer rounded-full px-4 py-1.5 text-sm ${!annual ? 'bg-navy text-white' : 'text-ink/55'}`}>Monthly</button>
+              <button onClick={() => setAnnual(true)} className={`cursor-pointer rounded-full px-4 py-1.5 text-sm ${annual ? 'bg-navy text-white' : 'text-ink/55'}`}>
+                Annual <span className={annual ? 'text-lime-bright' : 'text-leaf'}>−20%</span>
               </button>
             </div>
           </Reveal>
@@ -61,20 +63,24 @@ export default function Pricing() {
       </section>
 
       {/* tier cards */}
-      <section className="mx-auto max-w-6xl px-6 pb-20">
+      <section className="mx-auto max-w-5xl px-6 pb-16">
         <div className="grid gap-5 md:grid-cols-3">
           {TIERS.map((t, i) => (
             <Reveal key={t.name} delay={i * 80}>
-              <div className={`relative h-full rounded-3xl border p-8 ${t.highlight ? 'border-lime/50 bg-lime/[0.06] shadow-2xl shadow-lime/10' : 'border-white/10 bg-white/[0.03]'}`}>
-                {t.highlight && <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-lime px-3 py-1 text-xs font-semibold text-navy">Most popular</span>}
-                <h3 className="font-display text-2xl">{t.name}</h3>
-                <p className="text-sm text-white/50">{t.tagline}</p>
-                <p className="mt-5 font-display text-6xl">{price(t.monthly)}<span className="text-lg text-white/40">/mo</span></p>
-                {annual && t.monthly > 0 && <p className="mt-1 text-xs text-lime">billed annually</p>}
-                <MkButton variant={t.highlight ? 'lime' : 'ghost'} className="mt-6 w-full" onClick={() => navigate('/dashboard')}>{t.cta}</MkButton>
-                <ul className="mt-7 space-y-3">
+              <div className={`relative h-full rounded-xl border bg-white p-7 ${t.highlight ? 'border-leaf shadow-[0_2px_0_rgba(76,139,31,0.25)]' : 'border-inkline'}`}>
+                {t.highlight && (
+                  <span className="font-mono absolute -top-3 left-1/2 -translate-x-1/2 rounded bg-lime-bright px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-navy">
+                    Most popular
+                  </span>
+                )}
+                <h3 className="font-paper text-2xl text-ink">{t.name}</h3>
+                <p className="text-sm text-ink/50">{t.tagline}</p>
+                <p className="font-paper mt-5 text-6xl text-ink">{price(t.monthly)}<span className="text-lg text-ink/40">/mo</span></p>
+                {annual && t.monthly > 0 && <p className="font-mono mt-1 text-[10px] uppercase tracking-wider text-leaf">billed annually</p>}
+                <MkButton variant={t.highlight ? 'dark' : 'ghost'} className="font-sans mt-6 w-full" onClick={() => navigate('/dashboard')}>{t.cta}</MkButton>
+                <ul className="font-sans mt-7 space-y-3">
                   {t.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2.5 text-sm text-white/75"><Check size={16} className="shrink-0 text-lime" /> {f}</li>
+                    <li key={f} className="flex items-center gap-2.5 text-sm text-ink/75"><Check size={16} className="shrink-0 text-success" /> {f}</li>
                   ))}
                 </ul>
               </div>
@@ -84,24 +90,24 @@ export default function Pricing() {
       </section>
 
       {/* comparison table */}
-      <section className="mx-auto max-w-5xl px-6 py-12">
-        <Reveal><h2 className="mb-8 text-center font-display text-3xl md:text-4xl">Compare plans</h2></Reveal>
+      <section className="mx-auto max-w-4xl px-6 py-10">
+        <Reveal><h2 className="font-paper mb-3 text-center text-3xl text-ink md:text-4xl">Compare plans</h2></Reveal>
         <Reveal delay={80}>
-          <div className="overflow-hidden rounded-2xl border border-white/10">
-            <table className="w-full text-sm">
+          <div className="overflow-hidden rounded-xl border border-inkline bg-white">
+            <table className="font-sans w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10 bg-white/[0.03]">
-                  <th className="px-5 py-4 text-left font-medium text-white/60">Feature</th>
-                  {['Free', 'Pro', 'Plus'].map((n) => <th key={n} className="px-5 py-4 text-center font-medium">{n}</th>)}
+                <tr className="border-b border-inkline bg-paper">
+                  <th className="font-mono px-5 py-3.5 text-left text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/50">Feature</th>
+                  {['Free', 'Pro', 'Plus'].map((n) => <th key={n} className="font-mono px-5 py-3.5 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/60">{n}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {MATRIX.map((row, i) => (
-                  <tr key={row[0]} className={i % 2 ? 'bg-white/[0.01]' : ''}>
-                    <td className="px-5 py-3.5 text-white/80">{row[0]}</td>
+                  <tr key={row[0]} className={i % 2 ? 'bg-paper/60' : ''}>
+                    <td className="px-5 py-3.5 text-ink/75">{row[0]}</td>
                     {row.slice(1).map((v, j) => (
                       <td key={j} className="px-5 py-3.5 text-center">
-                        {v ? <Check size={17} className="mx-auto text-lime" /> : <Minus size={17} className="mx-auto text-white/20" />}
+                        {v ? <Check size={17} className="mx-auto text-success" /> : <Minus size={17} className="mx-auto text-ink/20" />}
                       </td>
                     ))}
                   </tr>
@@ -109,12 +115,16 @@ export default function Pricing() {
               </tbody>
             </table>
           </div>
+          <p className="font-paper mx-auto mt-3 max-w-xl text-center text-sm italic text-ink/55">
+            <span className="font-mono not-italic text-[10px] uppercase tracking-widest text-ink/45">Table 1.</span>{' '}
+            Feature availability by plan.
+          </p>
         </Reveal>
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-3xl px-6 py-20">
-        <Reveal><h2 className="mb-8 text-center font-display text-3xl md:text-4xl">Frequently asked questions</h2></Reveal>
+      <section className="mx-auto max-w-2xl px-6 py-16">
+        <Reveal><h2 className="font-paper mb-8 text-center text-3xl text-ink md:text-4xl">Frequently asked questions</h2></Reveal>
         <div className="space-y-3">
           {FAQS.map((f, i) => <FaqItem key={i} q={f[0]} a={f[1]} delay={i * 50} />)}
         </div>
@@ -129,12 +139,12 @@ function FaqItem({ q, a, delay }) {
   const [open, setOpen] = useState(false);
   return (
     <Reveal delay={delay}>
-      <div className="rounded-2xl border border-white/10 bg-white/[0.02]">
-        <button onClick={() => setOpen((o) => !o)} className="flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left">
-          <span className="font-medium text-white">{q}</span>
-          <ChevronDown size={18} className={`shrink-0 text-white/50 transition-transform ${open ? 'rotate-180' : ''}`} />
+      <div className="rounded-xl border border-inkline bg-white">
+        <button onClick={() => setOpen((o) => !o)} className="font-paper flex w-full cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left">
+          <span className="text-lg text-ink">{q}</span>
+          <ChevronDown size={18} className={`shrink-0 text-ink/45 transition-transform ${open ? 'rotate-180' : ''}`} />
         </button>
-        {open && <p className="px-6 pb-5 text-sm leading-relaxed text-white/60">{a}</p>}
+        {open && <p className="font-paper px-6 pb-5 text-[15px] leading-relaxed text-ink/65">{a}</p>}
       </div>
     </Reveal>
   );

@@ -36,6 +36,14 @@
   --color-muted: #5c6b7a;
   --font-display: 'DM Serif Display', Georgia, serif;
   --font-sans: 'DM Sans', system-ui, sans-serif;
+
+  /* Marketing "paper" theme — inspired by OpenScience's LaTeX/Computer Modern
+     aesthetic: paper-white ground, near-black ink, serif body, mono labels. */
+  --color-paper: #fbfaf7;
+  --color-inkline: rgba(13, 27, 42, 0.14);
+  --color-leaf: #4c8b1f; /* lime, darkened for legible text on paper */
+  --font-paper: 'CMU Serif', 'Computer Modern Serif', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 html,
@@ -91,3 +99,33 @@ body {
 .animate-floaty { animation: floaty 6s ease-in-out infinite; }
 .animate-glow { animation: glowPulse 5s ease-in-out infinite; }
 .fade-up { opacity: 0; animation: fadeUp 0.7s ease-out forwards; }
+
+/* ---- Paper (marketing) utilities ---- */
+.font-paper { font-family: var(--font-paper); }
+.font-mono { font-family: var(--font-mono); }
+
+/* Lime highlighter, as if a reader marked up the paper. */
+.hl {
+  background-image: linear-gradient(transparent 58%, rgba(142, 214, 48, 0.45) 58%, rgba(142, 214, 48, 0.45) 92%, transparent 92%);
+  padding: 0 0.08em;
+}
+
+/* Classic double rule under a journal masthead. */
+.rule-double {
+  border-top: 2px solid var(--color-ink);
+  position: relative;
+}
+.rule-double::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--color-ink);
+}
+
+/* Faint ruled-notebook grid for the paper background. */
+.paper-grid {
+  background-image: radial-gradient(rgba(13, 27, 42, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px;
+}

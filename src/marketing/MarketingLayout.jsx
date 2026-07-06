@@ -24,26 +24,25 @@ export default function MarketingLayout() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
     setMenuOpen(false);
   }, [pathname]);
 
   return (
-    <div className="relative min-h-screen bg-navy text-white">
+    <div className="font-paper relative min-h-screen bg-paper text-ink">
       <Grain />
 
-      {/* nav */}
+      {/* nav — a quiet masthead */}
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all ${
-          scrolled ? 'border-b border-white/10 bg-navy/80 backdrop-blur-xl' : 'bg-transparent'
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-all ${
+          scrolled ? 'border-inkline bg-paper/90 backdrop-blur-xl' : 'border-transparent bg-paper/60'
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
           <Link to="/" className="flex items-center gap-2.5">
-            <CitrusMark size={36} />
-            <span className="font-display text-2xl">Citrus</span>
+            <CitrusMark size={34} onLight />
+            <span className="font-display text-2xl text-ink">Citrus</span>
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -52,8 +51,8 @@ export default function MarketingLayout() {
                 key={n.to}
                 to={n.to}
                 className={({ isActive }) =>
-                  `rounded-lg px-4 py-2 text-sm transition-colors ${
-                    isActive ? 'text-lime' : 'text-white/70 hover:text-white'
+                  `font-sans rounded-lg px-3.5 py-2 text-sm transition-colors ${
+                    isActive ? 'text-leaf' : 'text-ink/60 hover:text-ink'
                   }`
                 }
               >
@@ -65,27 +64,27 @@ export default function MarketingLayout() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/login')}
-              className="hidden cursor-pointer rounded-lg px-4 py-2 text-sm text-white/80 hover:text-white sm:block"
+              className="font-sans hidden cursor-pointer rounded-lg px-3.5 py-2 text-sm text-ink/60 hover:text-ink sm:block"
             >
               Sign in
             </button>
             <button
               onClick={() => navigate('/dashboard')}
-              className="group flex cursor-pointer items-center gap-1.5 rounded-lg bg-lime px-4 py-2 text-sm font-semibold text-navy shadow-lg shadow-lime/20 hover:brightness-95"
+              className="font-sans group flex cursor-pointer items-center gap-1.5 rounded-lg bg-navy px-4 py-2 text-sm font-semibold text-white hover:bg-navy-soft"
             >
               Launch Citrus
               <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
             </button>
-            <button onClick={() => setMenuOpen((o) => !o)} className="cursor-pointer p-1.5 text-white lg:hidden">
+            <button onClick={() => setMenuOpen((o) => !o)} className="cursor-pointer p-1.5 text-ink lg:hidden">
               {menuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
 
         {menuOpen && (
-          <div className="border-t border-white/10 bg-navy/95 px-6 py-4 lg:hidden">
+          <div className="border-t border-inkline bg-paper px-6 py-4 lg:hidden">
             {NAV.map((n) => (
-              <Link key={n.to} to={n.to} className="block py-2 text-white/80 hover:text-white">
+              <Link key={n.to} to={n.to} className="font-sans block py-2 text-ink/70 hover:text-ink">
                 {n.label}
               </Link>
             ))}
@@ -93,7 +92,9 @@ export default function MarketingLayout() {
         )}
       </header>
 
-      <main className="relative z-10"><Outlet /></main>
+      <main className="relative z-10">
+        <Outlet />
+      </main>
 
       <MarketingFooter />
     </div>
@@ -108,42 +109,43 @@ function MarketingFooter() {
     { title: 'Legal', links: [['Privacy', '/privacy'], ['Terms', '/terms'], ['Security', '/privacy'], ['Cookies', '/privacy']] },
   ];
   return (
-    <footer className="relative z-10 border-t border-white/10 bg-navy">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-10 md:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
+    <footer className="relative z-10 mt-8">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="rule-double" />
+        <div className="grid gap-10 py-14 md:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="flex items-center gap-2.5">
-              <CitrusMark size={34} />
-              <span className="font-display text-xl">Citrus</span>
+              <CitrusMark size={30} onLight />
+              <span className="font-display text-xl text-ink">Citrus</span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm text-white/50">
-              The AI-native scientific research platform. Understand, discover, compare, organize, and write — all in one place.
+            <p className="mt-4 max-w-xs text-sm italic text-ink/55">
+              The AI-native scientific research platform. Papers, credibility, comparisons, and the write-up — in one place.
             </p>
-            <div className="mt-5 flex gap-3">
+            <div className="font-sans mt-5 flex gap-3">
               {['X', 'in', 'GH'].map((s) => (
-                <a key={s} href="#" className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-xs text-white/60 hover:border-lime/40 hover:text-lime">
+                <a key={s} href="#" className="flex h-8 w-8 items-center justify-center rounded-md border border-inkline text-xs text-ink/50 hover:border-leaf hover:text-leaf">
                   {s}
                 </a>
               ))}
             </div>
           </div>
           {cols.map((c) => (
-            <div key={c.title}>
-              <p className="text-sm font-semibold">{c.title}</p>
-              <ul className="mt-4 space-y-2.5 text-sm text-white/50">
+            <div key={c.title} className="font-sans">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/50">{c.title}</p>
+              <ul className="mt-4 space-y-2.5 text-sm text-ink/60">
                 {c.links.map(([label, to]) => (
                   <li key={label}>
-                    <Link to={to} className="hover:text-white">{label}</Link>
+                    <Link to={to} className="hover:text-ink">{label}</Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-white/40 sm:flex-row">
-          <p>© {new Date().getFullYear()} Citrus, Inc. Built for researchers.</p>
+        <div className="font-mono flex flex-col items-center justify-between gap-3 border-t border-inkline py-6 text-[11px] uppercase tracking-widest text-ink/40 sm:flex-row">
+          <p>© {new Date().getFullYear()} Citrus, Inc.</p>
           <p className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-lime" /> All systems operational
+            <span className="h-1.5 w-1.5 rounded-full bg-leaf" /> All systems operational
           </p>
         </div>
       </div>

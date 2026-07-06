@@ -1,6 +1,5 @@
-import { useNavigate } from 'react-router-dom';
-import { GraduationCap, Microscope, Users2, Building2, ArrowRight, Check } from 'lucide-react';
-import { Reveal, Eyebrow, GradientText, GlowBlob, MkButton } from '../mkui.jsx';
+import { GraduationCap, Microscope, Users2, Building2, Check } from 'lucide-react';
+import { Reveal, Eyebrow, Highlight } from '../mkui.jsx';
 import { CTASection } from './Home.jsx';
 
 const PERSONAS = [
@@ -35,34 +34,40 @@ const PERSONAS = [
 ];
 
 export default function Solutions() {
-  const navigate = useNavigate();
   return (
     <>
-      <section className="relative overflow-hidden pt-36 pb-16 text-center">
-        <GlowBlob className="-top-20 left-1/2 -translate-x-1/2" size={520} opacity={0.18} />
+      <section className="relative pt-32 pb-14 text-center">
+        <div className="paper-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto max-w-3xl px-6">
           <Reveal><Eyebrow>Solutions</Eyebrow></Reveal>
           <Reveal delay={60}>
-            <h1 className="mt-5 font-display text-5xl leading-tight md:text-7xl">Built for how <GradientText>you</GradientText> do research</h1>
+            <h1 className="font-paper mt-5 text-5xl leading-[1.12] text-ink md:text-6xl">
+              Built for how <Highlight>you</Highlight> do research
+            </h1>
           </Reveal>
-          <Reveal delay={120}><p className="mx-auto mt-6 max-w-xl text-lg text-white/65">From a first-year student to a fifty-person lab — Citrus adapts to your workflow.</p></Reveal>
+          <Reveal delay={120}>
+            <p className="font-paper mx-auto mt-6 max-w-xl text-lg italic text-ink/60">
+              From a first-year student to a fifty-person lab — Citrus adapts to your workflow.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-12">
+      <section className="mx-auto max-w-5xl px-6 py-8">
         <div className="grid gap-5 md:grid-cols-2">
           {PERSONAS.map((p, i) => (
             <Reveal key={p.who} delay={(i % 2) * 90}>
-              <div className="group h-full rounded-3xl border border-white/10 bg-white/[0.03] p-8 transition-all hover:-translate-y-1 hover:border-lime/40">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-lime/15 text-lime transition-colors group-hover:bg-lime group-hover:text-navy">
-                  <p.icon size={24} />
+              <div className="group h-full rounded-xl border border-inkline bg-white p-8 transition-all hover:-translate-y-0.5 hover:border-leaf/50">
+                <div className="flex items-center justify-between">
+                  <p.icon size={24} className="text-leaf" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink/35">Case {i + 1}</span>
                 </div>
-                <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-lime">{p.who}</p>
-                <h3 className="mt-2 font-display text-2xl">{p.title}</h3>
-                <p className="mt-3 text-white/60">{p.body}</p>
-                <ul className="mt-5 space-y-2">
+                <p className="font-mono mt-5 text-[11px] font-semibold uppercase tracking-[0.18em] text-leaf">{p.who}</p>
+                <h3 className="font-paper mt-2 text-2xl text-ink">{p.title}</h3>
+                <p className="font-paper mt-3 text-[16px] leading-relaxed text-ink/65">{p.body}</p>
+                <ul className="font-sans mt-5 space-y-2">
                   {p.points.map((pt) => (
-                    <li key={pt} className="flex items-center gap-2 text-sm text-white/75"><Check size={15} className="text-lime" /> {pt}</li>
+                    <li key={pt} className="flex items-center gap-2 text-sm text-ink/75"><Check size={15} className="text-success" /> {pt}</li>
                   ))}
                 </ul>
               </div>

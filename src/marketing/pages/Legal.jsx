@@ -1,4 +1,4 @@
-import { Reveal, GlowBlob } from '../mkui.jsx';
+import { Reveal, Rule } from '../mkui.jsx';
 
 const CONTENT = {
   privacy: {
@@ -30,19 +30,22 @@ const CONTENT = {
 export default function Legal({ kind = 'privacy' }) {
   const c = CONTENT[kind] || CONTENT.privacy;
   return (
-    <section className="relative overflow-hidden pt-36 pb-28">
-      <GlowBlob className="-top-24 left-1/2 -translate-x-1/2" size={420} opacity={0.12} />
-      <div className="relative mx-auto max-w-3xl px-6">
+    <section className="relative pt-32 pb-24">
+      <div className="relative mx-auto max-w-2xl px-6">
         <Reveal>
-          <h1 className="font-display text-5xl">{c.title}</h1>
-          <p className="mt-3 text-sm text-white/40">Last updated {c.updated}</p>
-          <p className="mt-6 text-lg text-white/70">{c.intro}</p>
+          <h1 className="font-paper text-5xl text-ink">{c.title}</h1>
+          <p className="font-mono mt-3 text-[10px] uppercase tracking-[0.2em] text-ink/45">Last updated {c.updated}</p>
+          <p className="font-paper mt-6 text-lg leading-relaxed text-ink/75">{c.intro}</p>
+          <Rule className="mt-8" />
         </Reveal>
         <div className="mt-10 space-y-8">
           {c.sections.map(([h, b], i) => (
             <Reveal key={h} delay={i * 40}>
-              <h2 className="font-display text-2xl">{h}</h2>
-              <p className="mt-2 leading-relaxed text-white/65">{b}</p>
+              <h2 className="font-paper text-2xl text-ink">
+                <span className="mr-3 text-ink/35">{i + 1}.</span>
+                {h}
+              </h2>
+              <p className="font-paper mt-2 text-justify leading-[1.8] text-ink/70">{b}</p>
             </Reveal>
           ))}
         </div>

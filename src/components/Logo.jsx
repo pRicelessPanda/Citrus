@@ -22,8 +22,10 @@ function petalPath(i) {
   return `M ${base[0]} ${base[1]} Q ${s1[0]} ${s1[1]} ${tip[0]} ${tip[1]} Q ${s2[0]} ${s2[1]} ${base[0]} ${base[1]} Z`;
 }
 
-export function CitrusMark({ size = 40, glow = true, className = '' }) {
-  const uid = 'cm'; // static ids are fine; multiple instances share defs
+export function CitrusMark({ size = 40, glow = true, className = '', onLight = false }) {
+  // onLight: ink-colored network + no dark disc, for paper backgrounds.
+  const node = onLight ? '#0D1B2A' : '#FFFFFF';
+  const uid = onLight ? 'cml' : 'cm'; // static ids are fine; instances share defs
   return (
     <svg
       width={size}
@@ -54,7 +56,7 @@ export function CitrusMark({ size = 40, glow = true, className = '' }) {
       <g filter={glow ? `url(#${uid}-glow)` : undefined}>
         {/* glowing rind */}
         <circle cx={CENTER} cy={CENTER} r="52" fill="none" stroke="#8ED630" strokeWidth="3.5" />
-        <circle cx={CENTER} cy={CENTER} r="48" fill="#0D1B2A" opacity="0.35" />
+        {!onLight && <circle cx={CENTER} cy={CENTER} r="48" fill="#0D1B2A" opacity="0.35" />}
 
         {/* lime segments */}
         <g stroke="#0D1B2A" strokeWidth="1.5" strokeLinejoin="round">
@@ -63,14 +65,14 @@ export function CitrusMark({ size = 40, glow = true, className = '' }) {
           ))}
         </g>
 
-        {/* white node network */}
-        <g stroke="#FFFFFF" strokeWidth="1.6" opacity="0.95">
+        {/* node network (white on dark, ink on paper) */}
+        <g stroke={node} strokeWidth="1.6" opacity="0.95">
           {Array.from({ length: SEGMENTS }).map((_, i) => {
             const [x, y] = pt(R_TIP - 4, -90 + i * 60);
             return <line key={i} x1={CENTER} y1={CENTER} x2={x} y2={y} />;
           })}
         </g>
-        <g fill="#FFFFFF">
+        <g fill={node}>
           {Array.from({ length: SEGMENTS }).map((_, i) => {
             const [x, y] = pt(R_TIP - 4, -90 + i * 60);
             return <circle key={i} cx={x} cy={y} r="3" />;
