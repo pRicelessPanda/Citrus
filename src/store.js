@@ -22,10 +22,27 @@ const SEED_PROJECTS = [
     },
     outlineDone: true,
     references: [
-      { paperId: 'attention-2017', addedAt: '2026-05-12T15:42:00Z', relevance: 9.4 },
-      { paperId: 'nlp-bias-2021', addedAt: '2026-05-20T10:15:00Z', relevance: 7.8 },
+      { paperId: 'attention-2017', addedAt: '2026-05-12T15:42:00Z', relevance: 9.4, stance: 'supports' },
+      { paperId: 'nlp-bias-2021', addedAt: '2026-05-20T10:15:00Z', relevance: 7.8, stance: 'contradicts' },
     ],
     notes: 'Focus first on Dravidian language family.',
+    chat: [
+      {
+        id: 'c1',
+        role: 'user',
+        author: 'Ashish Vaswani',
+        at: '2026-07-01T09:58:00Z',
+        text: 'Where do we stand on the literature for the transfer claim?',
+      },
+      {
+        id: 'c2',
+        role: 'ai',
+        author: 'Citrus AI',
+        at: '2026-07-01T10:00:00Z',
+        text: 'Reading from the project artifacts: 2 references so far — 1 supports the transfer claim, 1 contradicts it. Both sides are retained in the reference list. The Background hypothesis may need scoping once we add Tier 1 sources.',
+        grounded: ['Background', 'References (2)'],
+      },
+    ],
     deadlines: [
       { id: 'd1', title: 'Submit abstract', date: '2026-07-08', desc: 'ACL workshop', done: false, notify: ['1w', '3d'] },
       { id: 'd2', title: 'Finish literature review', date: '2026-07-22', desc: '', done: false, notify: ['1w'] },
@@ -232,18 +249,31 @@ export const useStore = create((set, get) => ({
   deleteResearchPaper: (id) =>
     set((s) => ({ researchPapers: s.researchPapers.filter((p) => p.id !== id) })),
 
-  addProjectReference: (projectId, paperId, relevance = 8.0) =>
+  addProjectReference: (projectId, paperId, relevance = 8.0, stance) =>
+    set((s) => {
+      // deterministic demo stance when none was assessed yet
+      let h = 0;
+      for (const c of paperId) h = (h * 31 + c.charCodeAt(0)) % 997;
+      const st = stance || (h % 3 === 0 ? 'contradicts' : h % 3 === 1 ? 'supports' : 'neutral');
+      return {
+        projects: s.projects.map((p) =>
+          p.id === projectId
+            ? {
+                ...p,
+                references: [
+                  ...(p.references || []).filter((r) => r.paperId !== paperId),
+                  { paperId, addedAt: new Date().toISOString(), relevance, stance: st },
+                ],
+              }
+            : p
+        ),
+      };
+    }),
+
+  addProjectChatMessage: (projectId, msg) =>
     set((s) => ({
       projects: s.projects.map((p) =>
-        p.id === projectId
-          ? {
-              ...p,
-              references: [
-                ...(p.references || []).filter((r) => r.paperId !== paperId),
-                { paperId, addedAt: new Date().toISOString(), relevance },
-              ],
-            }
-          : p
+        p.id === projectId ? { ...p, chat: [...(p.chat || []), msg] } : p
       ),
     })),
 

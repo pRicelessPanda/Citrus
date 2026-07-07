@@ -147,6 +147,157 @@ export async function evaluateCredibility() {
   return true; // signals "scored" — actual numbers come from the paper record
 }
 
+// ---- Literature rigor: supporting/contradicting detector ----
+// Contradictions are documented with both sides retained, never silently
+// resolved (adopted from OpenScience's literature-review pipeline).
+export async function detectStances(project) {
+  await delay(1000);
+  const refs = project.references || [];
+  const contested =
+    refs.length >= 2
+      ? [
+          {
+            claim: 'The central mechanism transfers across settings without adaptation.',
+            supports: refs.filter((r) => r.stance === 'supports').length,
+            contradicts: refs.filter((r) => r.stance === 'contradicts').length,
+            note: 'Both sides retained — contradictions are documented, not resolved.',
+          },
+        ]
+      : [];
+  return { contested };
+}
+
+// ---- Literature rigor: gap detector ----
+export async function detectGaps(project) {
+  await delay(1100);
+  const topic = project.overview?.title || 'this area';
+  return [
+    {
+      id: 'gap-1',
+      title: `No controlled comparison across populations in ${topic.toLowerCase()}`,
+      why: 'Existing references study single settings; none test the mechanism across typologically distinct groups.',
+      basis: `${(project.references || []).length} project references screened`,
+    },
+    {
+      id: 'gap-2',
+      title: 'Long-horizon effects are unstudied',
+      why: 'All screened studies measure immediate outcomes; none follow up beyond the initial window.',
+      basis: 'Cross-checked against related work in the field',
+    },
+    {
+      id: 'gap-3',
+      title: 'An established method from an adjacent field is unapplied here',
+      why: 'Methods with strong results in adjacent literature have not been tried on this problem.',
+      basis: 'Method-transfer scan',
+    },
+  ];
+}
+
+// ---- Advisory review agent ----
+// Adopted from OpenScience's critique sub-agent, reframed as advisory: it
+// surfaces findings the author can act on or dismiss — it never blocks.
+export async function reviewDraft(generated, sources) {
+  await delay(1300);
+  const findings = [];
+  let id = 0;
+  const unverified = sources.filter((p) => !(p.doi || p.arxivId));
+  for (const p of unverified) {
+    findings.push({
+      id: `f${id++}`,
+      category: 'Citation integrity',
+      severity: 'warning',
+      text: `“${p.title.slice(0, 48)}…” could not be verified against DOI/arXiv records.`,
+      where: 'References',
+    });
+  }
+  for (const g of generated || []) {
+    for (const f of g.flags || []) {
+      findings.push({
+        id: `f${id++}`,
+        category: 'Claim verification',
+        severity: 'warning',
+        text: `${g.section}: ${f.why}`,
+        where: g.section,
+      });
+    }
+  }
+  findings.push(
+    {
+      id: `f${id++}`,
+      category: 'Claim verification',
+      severity: 'warning',
+      text: 'Discussion: a comparative claim (“more effective than prior approaches”) has no baseline citation.',
+      where: 'Discussion',
+    },
+    {
+      id: `f${id++}`,
+      category: 'Statistical validity',
+      severity: 'observation',
+      text: 'Results reports point estimates without confidence intervals; consider adding uncertainty.',
+      where: 'Results',
+    },
+    {
+      id: `f${id++}`,
+      category: 'Logical consistency',
+      severity: 'observation',
+      text: 'Conclusion generalizes beyond the population described in Methodology; consider scoping the claim.',
+      where: 'Conclusion',
+    }
+  );
+  const passed = [
+    'Section structure is complete and internally ordered',
+    'In-text citations resolve to the numbered source list',
+    'No fabricated quantities detected in generated text',
+  ];
+  return { findings, passed };
+}
+
+// ---- Artifact-first project chat ----
+// The chatbot treats the project's documents as its working memory: replies
+// are grounded in artifacts and can write back to them.
+export async function projectChatReply(project, text) {
+  await delay(900);
+  const refs = project.references || [];
+  const grounded = ['Background', `References (${refs.length})`];
+  if (project.notes) grounded.push('Notes');
+
+  const lower = text.toLowerCase();
+
+  // "note:" or "add a note" → writes to the project's Notes artifact.
+  const noteMatch = text.match(/note[:\s]+(.+)/i);
+  if (lower.includes('note') && noteMatch) {
+    return {
+      text: `Noted. I've appended that to the project's Notes so it survives this conversation.`,
+      grounded,
+      action: { type: 'note', value: noteMatch[1].trim() },
+    };
+  }
+
+  // hypothesis talk → proposes an edit to the Background artifact.
+  if (lower.includes('hypothes')) {
+    return {
+      text:
+        `Your current hypothesis is: “${project.overview?.hypothesis}”. ` +
+        `Based on the ${refs.length} references (${refs.filter((r) => r.stance === 'contradicts').length} contradicting), ` +
+        `I'd suggest narrowing it to the population your strongest Tier 1 sources actually cover. Want me to apply that to the Background?`,
+      grounded,
+      proposal: {
+        type: 'hypothesis',
+        value: `${project.overview?.hypothesis} — scoped to the populations covered by Tier 1 evidence.`,
+      },
+    };
+  }
+
+  return {
+    text:
+      `Working from the project's artifacts: the Background frames “${project.overview?.title}”, ` +
+      `and the reference list currently holds ${refs.length} papers ` +
+      `(${refs.filter((r) => r.stance === 'supports').length} supporting, ${refs.filter((r) => r.stance === 'contradicts').length} contradicting). ` +
+      `${lower.includes('gap') ? 'The gap detector suggests the cross-population comparison is your strongest opening.' : 'Ask about the hypothesis, gaps, or say “note: …” to write to the project memory.'}`,
+    grounded,
+  };
+}
+
 function lower(s) {
   return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
 }

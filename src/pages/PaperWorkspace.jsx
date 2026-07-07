@@ -21,7 +21,8 @@ import AskAISplitScreen, { AskAIButton } from '../components/AskAISplitScreen.js
 import ChatPanel from '../components/ChatPanel.jsx';
 import { useStore } from '../store.js';
 import { paperById, PAPERS } from '../data/papers.js';
-import { generatePaper } from '../services/mockAI.js';
+import { generatePaper, reviewDraft } from '../services/mockAI.js';
+import { useEffect } from 'react';
 
 const SECTIONS = [
   'Abstract',
@@ -318,7 +319,24 @@ function GeneratedTab({ paper, updatePaper, onGenerate, generating }) {
   const toast = useToast();
   const [style, setStyle] = useState('APA');
   const [citePopup, setCitePopup] = useState(null);
+  const [review, setReview] = useState(null);
+  const [reviewing, setReviewing] = useState(false);
+  const [dismissed, setDismissed] = useState(() => new Set());
   const sources = paper.sources.map((s) => paperById(s.paperId)).filter(Boolean);
+
+  const runReview = async () => {
+    setReviewing(true);
+    const res = await reviewDraft(paper.generated, sources);
+    setReview(res);
+    setDismissed(new Set());
+    setReviewing(false);
+  };
+
+  // Advisory review runs automatically once a draft exists — it informs,
+  // never blocks (a human is watching; warnings are theirs to act on).
+  useEffect(() => {
+    if (paper.generated && !review && !reviewing) runReview();
+  }, [paper.generated]); // eslint-disable-line
 
   if (generating) {
     return (
@@ -353,9 +371,15 @@ function GeneratedTab({ paper, updatePaper, onGenerate, generating }) {
               <option key={s}>{s}</option>
             ))}
           </select>
+          <Button variant="outline" size="sm" onClick={runReview} disabled={reviewing}>
+            {reviewing ? <Loader2 size={15} className="animate-spin" /> : <Flag size={15} />}
+            {review ? 'Re-run review' : 'Run advisory review'}
+          </Button>
           <Button variant="outline" size="sm" onClick={() => toast('Version saved')}>Version history</Button>
         </div>
       </div>
+
+      <AdvisoryReview review={review} reviewing={reviewing} dismissed={dismissed} setDismissed={setDismissed} />
 
       <article className="rounded-2xl border border-line bg-white p-8">
         {paper.generated.map((g) => (
@@ -407,6 +431,89 @@ function GeneratedTab({ paper, updatePaper, onGenerate, generating }) {
           </div>
         )}
       </Modal>
+    </div>
+  );
+}
+
+// Advisory review panel — surfaces findings the author can act on or dismiss.
+// Unlike a blocking critique gate, nothing here prevents export or completion.
+function AdvisoryReview({ review, reviewing, dismissed, setDismissed }) {
+  const [open, setOpen] = useState(true);
+  if (reviewing && !review) {
+    return (
+      <div className="mb-4 flex items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm text-muted">
+        <Loader2 size={15} className="animate-spin" /> Advisory review in progress — checking claims, citations, statistics, and consistency…
+      </div>
+    );
+  }
+  if (!review) return null;
+
+  const active = review.findings.filter((f) => !dismissed.has(f.id));
+  const warnings = active.filter((f) => f.severity === 'warning');
+  const observations = active.filter((f) => f.severity === 'observation');
+  const dismiss = (id) => setDismissed((d) => new Set([...d, id]));
+
+  return (
+    <div className="mb-5 overflow-hidden rounded-xl border border-line bg-white">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left"
+      >
+        <Flag size={16} className={warnings.length ? 'text-warning' : 'text-success'} />
+        <span className="flex-1 text-sm font-medium">
+          Advisory review — {warnings.length} warning{warnings.length !== 1 && 's'}, {observations.length} observation{observations.length !== 1 && 's'}
+          {dismissed.size > 0 && <span className="font-normal text-muted"> · {dismissed.size} dismissed</span>}
+        </span>
+        <Badge tone="neutral">advisory · never blocks</Badge>
+      </button>
+
+      {open && (
+        <div className="border-t border-line px-4 py-3">
+          {active.length === 0 ? (
+            <p className="py-2 text-sm text-success">All findings addressed or dismissed. Nice.</p>
+          ) : (
+            <div className="space-y-2">
+              {[...warnings, ...observations].map((f) => (
+                <div
+                  key={f.id}
+                  className={`flex items-start gap-3 rounded-lg px-3 py-2.5 ${
+                    f.severity === 'warning' ? 'bg-warning-light/70' : 'bg-black/[0.03]'
+                  }`}
+                >
+                  <span
+                    className={`mt-0.5 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                      f.severity === 'warning' ? 'bg-warning/15 text-warning' : 'bg-black/10 text-muted'
+                    }`}
+                  >
+                    {f.severity}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-ink/90">{f.text}</p>
+                    <p className="mt-0.5 text-xs text-muted">{f.category} · {f.where}</p>
+                  </div>
+                  <button
+                    onClick={() => dismiss(f.id)}
+                    className="cursor-pointer text-xs text-muted hover:text-ink"
+                    title="Dismiss — your call, not the reviewer's"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {review.passed?.length > 0 && (
+            <div className="mt-3 border-t border-line pt-3">
+              <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted">Verification passed</p>
+              {review.passed.map((p) => (
+                <p key={p} className="flex items-center gap-2 py-0.5 text-xs text-success">
+                  <Check size={13} /> {p}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
