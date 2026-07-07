@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
@@ -53,5 +54,22 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # While the Pages site is in "deploy from a branch" mode, every push also
+      # triggers GitHub's legacy Jekyll build of the raw source, which races
+      # this deployment and can overwrite it. Wait for that run to finish so
+      # our built site always lands last. (Permanent fix: Settings -> Pages ->
+      # Source: "GitHub Actions", which stops the legacy build entirely.)
+      - name: Wait out any racing legacy branch build
+        run: |
+          for i in $(seq 1 30); do
+            STATUS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?head_sha=${{ github.sha }}&per_page=20" \
+              | jq -r '[.workflow_runs[] | select(.name=="pages build and deployment")] | if length==0 then "none" else (if all(.[]; .status=="completed") then "done" else "running" end) end')
+            echo "legacy pages build: $STATUS (check $i)"
+            if [ "$STATUS" = "done" ]; then break; fi
+            if [ "$STATUS" = "none" ] && [ "$i" -ge 3 ]; then break; fi
+            sleep 10
+          done
       - id: deployment
         uses: actions/deploy-pages@v4
