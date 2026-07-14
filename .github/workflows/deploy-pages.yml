@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Self-heal: while the Pages site remains in branch mode, GitHub can fire a
+  # spontaneous legacy rebuild of raw source (no push involved) and overwrite
+  # the site. Redeploy on a schedule so that never sticks for long.
+  schedule:
+    - cron: '17 */6 * * *'
 
 permissions:
   contents: read
